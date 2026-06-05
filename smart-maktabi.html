@@ -1,0 +1,1978 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Maktabi — Kelajak uchun Bilim</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+
+  <style>
+    /* ===========================
+       CSS CUSTOM PROPERTIES
+    =========================== */
+    :root {
+      --bg:          #0a0e1a;
+      --bg-card:     #111728;
+      --bg-card2:    #0d1220;
+      --primary:     #5b7ff5;
+      --primary-dim: rgba(91,127,245,0.15);
+      --secondary:   #7c3aed;
+      --accent:      #f5b523;
+      --accent-dim:  rgba(245,181,35,0.12);
+      --fg:          #e8ecf5;
+      --fg-muted:    #7a869e;
+      --border:      rgba(255,255,255,0.08);
+      --radius:      16px;
+      --radius-sm:   10px;
+      --font-sans:   'Inter', sans-serif;
+      --font-serif:  'Playfair Display', Georgia, serif;
+    }
+
+    /* ===========================
+       BASE RESET
+    =========================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-sans);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, h5 { font-family: var(--font-serif); }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ===========================
+       LOADING SCREEN
+    =========================== */
+    #loading-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+
+    #loading-screen.hide {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .loading-glow {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(91,127,245,0.25), transparent 70%);
+      animation: pulse-glow 3s ease-in-out infinite;
+    }
+
+    .loading-icon {
+      font-size: 64px;
+      color: var(--accent);
+      animation: float 3s ease-in-out infinite;
+      margin-bottom: 24px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .loading-title {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      color: var(--fg);
+      position: relative;
+      z-index: 2;
+      animation: fade-up 0.6s ease 0.3s both;
+    }
+
+    .loading-subtitle {
+      margin-top: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--primary);
+      position: relative;
+      z-index: 2;
+      animation: fade-up 0.6s ease 0.6s both;
+    }
+
+    .loading-bar-wrap {
+      margin-top: 32px;
+      width: 200px;
+      height: 3px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+      z-index: 2;
+    }
+
+    .loading-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 10px;
+      animation: load-bar 2.4s ease forwards;
+    }
+
+    /* ===========================
+       NAVBAR
+    =========================== */
+    #navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      padding: 0 24px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    #navbar.scrolled {
+      background: rgba(10,14,26,0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 1px 0 var(--border);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .nav-logo-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: rgba(91,127,245,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      font-size: 18px;
+    }
+
+    .nav-logo-text {
+      font-family: var(--font-serif);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--fg);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(232,236,245,0.75);
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--accent); }
+
+    .nav-links .btn-register {
+      background: var(--accent);
+      color: #0a0e1a;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 14px;
+      transition: opacity 0.2s;
+    }
+
+    .nav-links .btn-register:hover { opacity: 0.88; color: #0a0e1a; }
+
+    .nav-hamburger {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--fg);
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    /* Mobile nav drawer */
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 990;
+      background: rgba(10,14,26,0.97);
+      backdrop-filter: blur(20px);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+    }
+
+    .mobile-nav.open { display: flex; }
+
+    .mobile-nav a {
+      font-family: var(--font-serif);
+      font-size: 24px;
+      font-weight: 500;
+      color: var(--fg);
+      transition: color 0.2s;
+    }
+
+    .mobile-nav a:hover { color: var(--accent); }
+
+    .mobile-nav-close {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      background: none;
+      border: none;
+      color: var(--fg);
+      font-size: 30px;
+      cursor: pointer;
+    }
+
+    /* ===========================
+       SECTION SHARED
+    =========================== */
+    section { position: relative; overflow: hidden; }
+
+    .section-label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      color: var(--fg);
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+
+    .section-desc {
+      font-size: 17px;
+      color: var(--fg-muted);
+      max-width: 560px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    .glow-blob {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      filter: blur(120px);
+    }
+
+    /* Animate on scroll */
+    .reveal {
+      opacity: 0;
+      transform: translateY(36px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===========================
+       HERO
+    =========================== */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+    }
+
+    .hero-orbit {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(91,127,245,0.12);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 18px;
+      border-radius: 100px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(232,236,245,0.7);
+      margin-bottom: 28px;
+    }
+
+    .hero-title {
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 900;
+      line-height: 1.05;
+      margin-bottom: 20px;
+    }
+
+    .hero-title .gold {
+      background: linear-gradient(135deg, var(--accent), #e8910e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: clamp(1rem, 2.5vw, 1.3rem);
+      color: var(--fg-muted);
+      max-width: 600px;
+      margin: 0 auto 40px;
+      font-weight: 300;
+      line-height: 1.6;
+    }
+
+    .btn-outline-hero {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      border: 1px solid var(--primary);
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--fg);
+      background: transparent;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-outline-hero:hover { background: rgba(91,127,245,0.1); color: var(--fg); }
+
+    /* ===========================
+       STATS
+    =========================== */
+    #stats {
+      padding: 64px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.015);
+    }
+
+    .stat-number {
+      font-family: var(--font-serif);
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+      margin-top: 8px;
+    }
+
+    /* ===========================
+       ABOUT
+    =========================== */
+    #about { padding: 100px 0; }
+
+    .value-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+
+    .value-card:hover {
+      border-color: rgba(91,127,245,0.4);
+      transform: translateY(-4px);
+    }
+
+    .value-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 16px;
+    }
+
+    /* ===========================
+       TEACHERS
+    =========================== */
+    #teachers { padding: 100px 0; }
+
+    .teacher-card {
+      border-radius: 24px;
+      padding: 28px;
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s, border-color 0.3s;
+    }
+
+    .teacher-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(91,127,245,0.4);
+    }
+
+    .teacher-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(17,23,40,0.6);
+      backdrop-filter: blur(4px);
+      border-radius: inherit;
+    }
+
+    .teacher-card > * { position: relative; z-index: 1; }
+
+    .teacher-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-serif);
+      font-size: 20px;
+      font-weight: 700;
+      border: 1px solid rgba(255,255,255,0.1);
+      flex-shrink: 0;
+    }
+
+    .stars { color: var(--accent); font-size: 12px; letter-spacing: 1px; }
+
+    /* ===========================
+       NEWS
+    =========================== */
+    #news { padding: 100px 0; }
+
+    .news-card {
+      background: rgba(255,255,255,0.025);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      overflow: hidden;
+      transition: transform 0.3s, border-color 0.3s;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .news-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent), var(--secondary));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .news-card:hover { transform: translateY(-4px); border-color: rgba(91,127,245,0.4); }
+    .news-card:hover::after { opacity: 1; }
+
+    .news-card-body { padding: 28px; }
+
+    .news-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      border: 1px solid;
+    }
+
+    /* ===========================
+       ACHIEVEMENTS
+    =========================== */
+    #achievements { padding: 100px 0; }
+
+    .achievement-card {
+      border-radius: 24px;
+      padding: 32px;
+      border: 1px solid;
+      transition: transform 0.3s, box-shadow 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .achievement-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    .achievement-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      border: 1px solid;
+      margin-bottom: 20px;
+      transition: transform 0.3s;
+    }
+
+    .achievement-card:hover .achievement-icon { transform: scale(1.1); }
+
+    .achievement-number {
+      font-family: var(--font-serif);
+      font-size: 3rem;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    /* ===========================
+       GALLERY
+    =========================== */
+    #gallery { padding: 100px 0; }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-auto-rows: 180px;
+      gap: 12px;
+    }
+
+    .gallery-item {
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      transition: border-color 0.3s;
+    }
+
+    .gallery-item:hover { border-color: rgba(91,127,245,0.5); }
+    .gallery-item.span-2 { grid-column: span 2; }
+    .gallery-item.row-2  { grid-row: span 2; }
+
+    .gallery-bg {
+      position: absolute;
+      inset: 0;
+    }
+
+    .gallery-emoji {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      transition: transform 0.3s;
+    }
+
+    .gallery-item:hover .gallery-emoji { transform: scale(1.25); }
+
+    .gallery-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0);
+      transition: background 0.3s;
+      display: flex;
+      align-items: flex-end;
+    }
+
+    .gallery-item:hover .gallery-overlay { background: rgba(0,0,0,0.35); }
+
+    .gallery-info {
+      padding: 12px 14px;
+      width: 100%;
+      transform: translateY(100%);
+      transition: transform 0.3s;
+    }
+
+    .gallery-item:hover .gallery-info { transform: translateY(0); }
+
+    .gallery-zoom {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      backdrop-filter: blur(4px);
+    }
+
+    .gallery-item:hover .gallery-zoom { opacity: 1; }
+
+    /* Gallery lightbox */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .lightbox.open { display: flex; }
+
+    .lightbox-inner {
+      width: 100%;
+      max-width: 700px;
+      aspect-ratio: 16/9;
+      border-radius: 24px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.12);
+      border: none;
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      z-index: 10;
+    }
+
+    .lightbox-close:hover { background: rgba(255,255,255,0.22); }
+
+    /* ===========================
+       REGISTRATION
+    =========================== */
+    #registration { padding: 100px 0; }
+
+    .operator-box {
+      border: 1px solid rgba(245,181,35,0.3);
+      background: rgba(245,181,35,0.05);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+
+    .operator-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .operator-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: rgba(245,181,35,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .contact-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      border-radius: 12px;
+      border: 1px solid;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .contact-btn-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+      transition: transform 0.2s;
+    }
+
+    .contact-btn:hover .contact-btn-icon { transform: scale(1.1); }
+
+    .contact-btn.phone {
+      background: rgba(91,127,245,0.08);
+      border-color: rgba(91,127,245,0.3);
+    }
+
+    .contact-btn.phone:hover { background: rgba(91,127,245,0.15); }
+
+    .contact-btn.telegram {
+      background: rgba(14,150,212,0.08);
+      border-color: rgba(14,150,212,0.3);
+    }
+
+    .contact-btn.telegram:hover { background: rgba(14,150,212,0.15); }
+
+    .form-card {
+      background: rgba(255,255,255,0.025);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .form-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent), var(--secondary));
+    }
+
+    .form-label-custom {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--fg);
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .form-control-custom {
+      width: 100%;
+      height: 50px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--fg);
+      padding: 0 16px;
+      font-size: 15px;
+      font-family: var(--font-sans);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-control-custom:focus { border-color: var(--primary); }
+
+    .form-control-custom::placeholder { color: var(--fg-muted); }
+
+    .btn-submit {
+      width: 100%;
+      height: 54px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 17px;
+      font-weight: 700;
+      font-family: var(--font-sans);
+      cursor: pointer;
+      transition: opacity 0.2s;
+      margin-top: 8px;
+    }
+
+    .btn-submit:hover { opacity: 0.88; }
+
+    .success-box {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 24px;
+      text-align: center;
+    }
+
+    .success-icon-wrap {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: rgba(34,197,94,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      color: #4ade80;
+      margin-bottom: 16px;
+    }
+
+    .field-error {
+      color: #f87171;
+      font-size: 12px;
+      margin-top: 4px;
+      display: none;
+    }
+
+    .field-error.show { display: block; }
+
+    /* ===========================
+       CONTACT
+    =========================== */
+    #contact { padding: 100px 0; }
+
+    .contact-info-card {
+      border-radius: 16px;
+      padding: 24px;
+      border: 1px solid;
+      transition: transform 0.3s;
+    }
+
+    .contact-info-card:hover { transform: translateY(-4px); }
+
+    .contact-info-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      border: 1px solid;
+      margin-bottom: 12px;
+      transition: transform 0.3s;
+    }
+
+    .contact-info-card:hover .contact-info-icon { transform: scale(1.1); }
+
+    .map-placeholder {
+      border-radius: 24px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      height: 380px;
+      position: relative;
+      background: linear-gradient(135deg, #0a1628, #0f172a, #0c1020);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .map-grid {
+      position: absolute;
+      inset: 0;
+      opacity: 0.08;
+      background-image:
+        linear-gradient(rgba(91,127,245,0.6) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(91,127,245,0.6) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+
+    /* ===========================
+       FOOTER
+    =========================== */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 64px 0 32px;
+      position: relative;
+    }
+
+    .footer-logo { font-family: var(--font-serif); font-size: 22px; font-weight: 700; color: var(--fg); }
+
+    .footer-desc { font-size: 14px; color: var(--fg-muted); line-height: 1.7; max-width: 280px; margin-top: 12px; }
+
+    .footer-heading { font-family: var(--font-sans); font-size: 12px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--fg); margin-bottom: 20px; }
+
+    .footer-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: var(--fg-muted);
+      margin-bottom: 12px;
+      transition: color 0.2s;
+    }
+
+    .footer-link:hover { color: var(--accent); }
+
+    .footer-link::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--fg-muted);
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+
+    .footer-link:hover::before { background: var(--accent); }
+
+    .social-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      color: var(--fg-muted);
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .social-btn.tg:hover  { color: #38bdf8; border-color: rgba(56,189,248,0.4); }
+    .social-btn.ig:hover  { color: #f472b6; border-color: rgba(244,114,182,0.4); }
+    .social-btn.yt:hover  { color: #f87171; border-color: rgba(248,113,113,0.4); }
+    .social-btn.fb:hover  { color: #60a5fa; border-color: rgba(96,165,250,0.4); }
+
+    .copyright { font-size: 13px; color: var(--fg-muted); }
+
+    /* ===========================
+       KEYFRAME ANIMATIONS
+    =========================== */
+    @keyframes float {
+      0%,100% { transform: translateY(0) rotate(0deg); }
+      50%      { transform: translateY(-12px) rotate(8deg); }
+    }
+
+    @keyframes pulse-glow {
+      0%,100% { opacity: 0.5; transform: scale(1); }
+      50%      { opacity: 1; transform: scale(1.1); }
+    }
+
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes load-bar {
+      0%   { width: 0%; }
+      100% { width: 100%; }
+    }
+
+    @keyframes orbit-cw  { from { transform: translate(-50%,-50%) rotate(0deg);   } to { transform: translate(-50%,-50%) rotate(360deg);  } }
+    @keyframes orbit-ccw { from { transform: translate(-50%,-50%) rotate(0deg);   } to { transform: translate(-50%,-50%) rotate(-360deg); } }
+
+    .orbit-1 { width: 700px; height: 700px; animation: orbit-cw  60s linear infinite; }
+    .orbit-2 { width: 500px; height: 500px; animation: orbit-ccw 40s linear infinite; }
+    .orbit-3 { width: 900px; height: 900px; animation: orbit-cw  80s linear infinite; border-color: rgba(245,181,35,0.05); }
+
+    /* ===========================
+       RESPONSIVE
+    =========================== */
+    @media (max-width: 992px) {
+      .nav-links { display: none; }
+      .nav-hamburger { display: block; }
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+      .gallery-item.span-2 { grid-column: span 1; }
+    }
+
+    @media (max-width: 576px) {
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 140px; }
+      .form-card { padding: 24px; }
+      .operator-contacts { flex-direction: column; }
+    }
+
+    /* ===========================
+       BOOTSTRAP OVERRIDES
+    =========================== */
+    .container { max-width: 1200px; }
+  </style>
+</head>
+<body>
+
+<!-- ===========================
+     LOADING SCREEN
+=========================== -->
+<div id="loading-screen">
+  <div class="loading-glow"></div>
+  <div class="loading-icon"><i class="bi bi-book-half"></i></div>
+  <h1 class="loading-title">Smart Maktabi</h1>
+  <p class="loading-subtitle">Kelajak uchun Bilim</p>
+  <div class="loading-bar-wrap"><div class="loading-bar"></div></div>
+</div>
+
+<!-- ===========================
+     NAVBAR
+=========================== -->
+<nav id="navbar">
+  <div class="nav-logo" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <div class="nav-logo-icon"><i class="bi bi-book-half"></i></div>
+    <span class="nav-logo-text">Smart Maktabi</span>
+  </div>
+
+  <ul class="nav-links">
+    <li><a href="#about"        onclick="navScrollTo(event,'about')">Biz Haqimizda</a></li>
+    <li><a href="#teachers"     onclick="navScrollTo(event,'teachers')">O'qituvchilar</a></li>
+    <li><a href="#news"         onclick="navScrollTo(event,'news')">Yangiliklar</a></li>
+    <li><a href="#achievements" onclick="navScrollTo(event,'achievements')">Yutuqlar</a></li>
+    <li><a href="#gallery"      onclick="navScrollTo(event,'gallery')">Galereya</a></li>
+    <li><a href="#contact"      onclick="navScrollTo(event,'contact')">Aloqa</a></li>
+    <li><a href="#registration" onclick="navScrollTo(event,'registration')" class="btn-register">Ro'yxatdan O'tish</a></li>
+  </ul>
+
+  <button class="nav-hamburger" onclick="toggleMobileNav()">
+    <i class="bi bi-list"></i>
+  </button>
+</nav>
+
+<!-- Mobile Nav -->
+<div class="mobile-nav" id="mobileNav">
+  <button class="mobile-nav-close" onclick="toggleMobileNav()"><i class="bi bi-x"></i></button>
+  <a href="#about"        onclick="mobileNavGo('about')">Biz Haqimizda</a>
+  <a href="#teachers"     onclick="mobileNavGo('teachers')">O'qituvchilar</a>
+  <a href="#news"         onclick="mobileNavGo('news')">Yangiliklar</a>
+  <a href="#achievements" onclick="mobileNavGo('achievements')">Yutuqlar</a>
+  <a href="#gallery"      onclick="mobileNavGo('gallery')">Galereya</a>
+  <a href="#registration" onclick="mobileNavGo('registration')" style="color:var(--accent)">Ro'yxatdan O'tish</a>
+  <a href="#contact"      onclick="mobileNavGo('contact')">Aloqa</a>
+</div>
+
+<!-- ===========================
+     HERO
+=========================== -->
+<section id="hero">
+  <!-- Orbiting rings -->
+  <div class="hero-orbit orbit-1"></div>
+  <div class="hero-orbit orbit-2"></div>
+  <div class="hero-orbit orbit-3"></div>
+  <!-- Glows -->
+  <div class="glow-blob" style="top:-200px;right:-150px;width:500px;height:500px;background:rgba(91,127,245,0.18);"></div>
+  <div class="glow-blob" style="bottom:-200px;left:-150px;width:600px;height:600px;background:rgba(124,58,237,0.15);"></div>
+
+  <div class="container text-center" style="position:relative;z-index:2;">
+    <div class="hero-badge reveal">
+      <i class="bi bi-stars" style="color:var(--accent)"></i>
+      Premium Ta'lim Standarti
+    </div>
+    <h1 class="hero-title reveal">
+      Smart <span class="gold">Maktabi</span>
+    </h1>
+    <p class="hero-sub reveal">
+      Kelajak uchun Bilim. Farzandingiz uchun xalqaro darajadagi ta'lim va zamonaviy muhit.
+    </p>
+    <div class="reveal">
+      <button class="btn-outline-hero" onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})">
+        Ko'proq Bilish
+        <i class="bi bi-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ===========================
+     STATS
+=========================== -->
+<section id="stats">
+  <div class="container">
+    <div class="row text-center g-4">
+      <div class="col-6 col-md-3 reveal">
+        <div class="stat-number" data-target="500" data-suffix="+">0</div>
+        <div class="stat-label">O'quvchilar</div>
+      </div>
+      <div class="col-6 col-md-3 reveal" style="transition-delay:.1s">
+        <div class="stat-number" data-target="50" data-suffix="+">0</div>
+        <div class="stat-label">O'qituvchilar</div>
+      </div>
+      <div class="col-6 col-md-3 reveal" style="transition-delay:.2s">
+        <div class="stat-number" data-target="15" data-suffix="+">0</div>
+        <div class="stat-label">Yillik Tajriba</div>
+      </div>
+      <div class="col-6 col-md-3 reveal" style="transition-delay:.3s">
+        <div class="stat-number" data-target="100" data-suffix="%">0</div>
+        <div class="stat-label">Natijalar</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===========================
+     ABOUT
+=========================== -->
+<section id="about">
+  <div class="glow-blob" style="right:-200px;top:50%;transform:translateY(-50%);width:500px;height:500px;background:rgba(124,58,237,0.1);"></div>
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6 reveal">
+        <p class="section-label">Biz Haqimizda</p>
+        <h2 class="section-title" style="text-align:left;margin:0 0 20px">Kelajak Liderlarini Tarbiyalaymiz</h2>
+        <p style="font-size:17px;color:var(--fg-muted);line-height:1.8;margin-bottom:16px">
+          Smart Maktabi — bu shunchaki maktab emas, balki innovatsiyalar, intellekt va milliy qadriyatlar uyg'unlashgan yirik ta'lim dargohidir. Bizning maqsadimiz har bir o'quvchida mustaqil fikrlash, ijodkorlik va mas'uliyat hissini shakllantirishdir.
+        </p>
+        <p style="font-size:17px;color:var(--fg-muted);line-height:1.8">
+          Biz o'zbek merosini xalqaro ta'lim standartlari bilan bog'lagan holda, o'quvchilarimizni global dunyoga tayyorlaymiz.
+        </p>
+      </div>
+      <div class="col-lg-6">
+        <div class="row g-3">
+          <div class="col-6 reveal" style="transition-delay:.1s">
+            <div class="value-card">
+              <div class="value-icon" style="color:var(--primary)"><i class="bi bi-globe2"></i></div>
+              <h5 style="font-size:16px;margin-bottom:8px">Xalqaro Dastur</h5>
+              <p style="font-size:13px;color:var(--fg-muted);margin:0;line-height:1.6">Xalqaro standartlarga moslashtirilgan ilg'or o'quv dasturi.</p>
+            </div>
+          </div>
+          <div class="col-6 reveal" style="transition-delay:.15s">
+            <div class="value-card">
+              <div class="value-icon" style="color:var(--accent)"><i class="bi bi-bullseye"></i></div>
+              <h5 style="font-size:16px;margin-bottom:8px">Aniq Maqsadlar</h5>
+              <p style="font-size:13px;color:var(--fg-muted);margin:0;line-height:1.6">Har bir o'quvchining shaxsiy qobiliyatini rivojlantirish.</p>
+            </div>
+          </div>
+          <div class="col-6 reveal" style="transition-delay:.2s">
+            <div class="value-card">
+              <div class="value-icon" style="color:#a78bfa"><i class="bi bi-shield-check"></i></div>
+              <h5 style="font-size:16px;margin-bottom:8px">Xavfsiz Muhit</h5>
+              <p style="font-size:13px;color:var(--fg-muted);margin:0;line-height:1.6">Farzandlaringiz uchun qulay va to'liq xavfsiz ta'lim muhiti.</p>
+            </div>
+          </div>
+          <div class="col-6 reveal" style="transition-delay:.25s">
+            <div class="value-card">
+              <div class="value-icon" style="color:var(--primary)"><i class="bi bi-book"></i></div>
+              <h5 style="font-size:16px;margin-bottom:8px">Zamonaviy Kutubxona</h5>
+              <p style="font-size:13px;color:var(--fg-muted);margin:0;line-height:1.6">Eng so'nggi adabiyotlar va raqamli resurslar bazasi.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===========================
+     TEACHERS
+=========================== -->
+<section id="teachers" style="background:rgba(255,255,255,0.01)">
+  <div class="glow-blob" style="left:-200px;top:50%;transform:translateY(-50%);width:500px;height:500px;background:rgba(91,127,245,0.1);"></div>
+  <div class="container">
+    <div class="text-center mb-5 reveal">
+      <p class="section-label">Jamoamiz</p>
+      <h2 class="section-title">Tajribali O'qituvchilar</h2>
+      <p class="section-desc">Har bir o'qituvchimiz o'z sohasining eng yaxshi mutaxassisi — bilim, tajriba va mehr bilan ishlaydi.</p>
+    </div>
+    <div class="row g-4">
+
+      <div class="col-md-6 col-lg-4 reveal" style="transition-delay:.05s">
+        <div class="teacher-card" style="background:linear-gradient(135deg,rgba(59,130,246,0.2),rgba(59,130,246,0.03))">
+          <div class="d-flex align-items-start gap-3 mb-4">
+            <div class="teacher-avatar" style="background:rgba(59,130,246,0.2);color:var(--fg)">AK</div>
+            <div>
+              <h5 style="font-size:17px;margin-bottom:4px">Aziza Karimova</h5>
+              <div style="display:flex;align-items:center;gap:6px;color:var(--accent);font-size:13px;font-weight:600">
+                <i class="bi bi-mortarboard-fill"></i> Matematika
+              </div>
+            </div>
+          </div>
+          <p style="font-size:13px;color:var(--fg-muted);line-height:1.7;margin-bottom:16px">Xalqaro olimpiada g'oliblarini tayyorlagan tajribali muallima.</p>
+          <div class="d-flex align-items-center gap-2 pt-3" style="border-top:1px solid var(--border)">
+            <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <span style="font-size:12px;color:var(--fg-muted);margin-left:4px">12 yil tajriba</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-4 reveal" style="transition-delay:.1s">
+        <div class="teacher-card" style="background:linear-gradient(135deg,rgba(139,92,246,0.2),rgba(139,92,246,0.03))">
+          <div class="d-flex align-items-start gap-3 mb-4">
+            <div class="teacher-avatar" style="background:rgba(139,92,246,0.2);color:var(--fg)">JT</div>
+            <div>
+              <h5 style="font-size:17px;margin-bottom:4px">Jasur Toshmatov</h5>
+              <div style="display:flex;align-items:center;gap:6px;color:var(--accent);font-size:13px;font-weight:600">
+                <i class="bi bi-mortarboard-fill"></i> Fizika
+              </div>
+            </div>
+          </div>
+          <p style="font-size:13px;color:var(--fg-muted);line-height:1.7;margin-bottom:16px">Ilmiy tadqiqotchi va innovatsion ta'lim texnologiyalari mutaxassisi.</p>
+          <div class="d-flex align-items-center gap-2 pt-3" style="border-top:1px solid var(--border)">
+            <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <span style="font-size:12px;color:var(--fg-muted);margin-left:4px">9 yil tajriba</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-4 reveal" style="transition-delay:.15s">
+        <div class="teacher-card" style="background:linear-gradient(135deg,rgba(245,158,11,0.2),rgba(245,158,11,0.03))">
+          <div class="d-flex align-items-start gap-3 mb-4">
+            <div class="teacher-avatar" style="background:rgba(245,158,11,0.2);color:var(--fg)">NY</div>
+            <div>
+              <h5 style="font-size:17px;margin-bottom:4px">Nilufar Yusupova</h5>
+              <div style="display:flex;align-items:center;gap:6px;color:var(--accent);font-size:13px;font-weight:600">
+                <i class="bi bi-mortarboard-fill"></i> Ingliz Tili
+              </div>
+            </div>
+          </div>
+          <p style="font-size:13px;color:var(--fg-muted);line-height:1.7;margin-bottom:16px">IELTS va TOEFL bo'yicha sertifikatlangan ingliz tili o'qituvchisi.</p>
+          <div class="d-flex align-items-center gap-2 pt-3" style="border-top:1px solid var(--border)">
+            <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <span style="font-size:12px;color:var(--fg-muted);margin-left:4px">15 yil tajriba</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-4 reveal" style="transition-delay:.2s">
+        <div class="teacher-card" style="background:linear-gradient(135deg,rgba(34,197,94,0.2),rgba(34,197,94,0.03))">
+          <div class="d-flex align-items-start gap-3 mb-4">
+            <div class="teacher-avatar" style="background:rgba(34,197,94,0.2);color:var(--fg)">BR</div>
+            <div>
+              <h5 style="font-size:17px;margin-bottom:4px">Bobur Rahimov</h5>
+              <div style="display:flex;align-items:center;gap:6px;color:var(--accent);font-size:13px;font-weight:600">
+                <i class="bi bi-mortarboard-fill"></i> Kimyo va Biologiya
+              </div>
+            </div>
+          </div>
+          <p style="font-size:13px;color:var(--fg-muted);line-height:1.7;margin-bottom:16px">Zamonaviy laboratoriya metodlari asosida ta'lim beruvchi.</p>
+          <div class="d-flex align-items-center gap-2 pt-3" style="border-top:1px solid var(--border)">
+            <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <span style="font-size:12px;color:var(--fg-muted);margin-left:4px">11 yil tajriba</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-4 reveal" style="transition-delay:.25s">
+        <div class="teacher-card" style="background:linear-gradient(135deg,rgba(244,63,94,0.2),rgba(244,63,94,0.03))">
+          <div class="d-flex align-items-start gap-3 mb-4">
+            <div class="teacher-avatar" style="background:rgba(244,63,94,0.2);color:var(--fg)">SM</div>
+            <div>
+              <h5 style="font-size:17px;margin-bottom:4px">Sarvinoz Mirzayeva</h5>
+              <div style="display:flex;align-items:center;gap:6px;color:var(--accent);font-size:13px;font-weight:600">
+                <i class="bi bi-mortarboard-fill"></i> Tarix va Adabiyot
+              </div>
+            </div>
+          </div>
+          <p style="font-size:13px;color:var(--fg-muted);line-height:1.7;margin-bottom:16px">O'zbek milliy merosini zamonaviy pedagogika bilan uyg'unlashtiruvchi muallima.</p>
+          <div class="d-flex align-items-center gap-2 pt-3" style="border-top:1px solid var(--border)">
+            <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <span style="font-size:12px;color:var(--fg-muted);margin-left:4px">8 yil tajriba</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-4 reveal" style="transition-delay:.3s">
+        <div class="teacher-card" style="background:linear-gradient(135deg,rgba(6,182,212,0.2),rgba(6,182,212,0.03))">
+          <div class="d-flex align-items-start gap-3 mb-4">
+            <div class="teacher-avatar" style="background:rgba(6,182,212,0.2);color:var(--fg)">SN</div>
+            <div>
+              <h5 style="font-size:17px;margin-bottom:4px">Sherzod Nazarov</h5>
+              <div style="display:flex;align-items:center;gap:6px;color:var(--accent);font-size:13px;font-weight:600">
+                <i class="bi bi-mortarboard-fill"></i> Informatika
+              </div>
+            </div>
+          </div>
+          <p style="font-size:13px;color:var(--fg-muted);line-height:1.7;margin-bottom:16px">Python, AI va robototexnika asoslari bo'yicha mutaxassis o'qituvchi.</p>
+          <div class="d-flex align-items-center gap-2 pt-3" style="border-top:1px solid var(--border)">
+            <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <span style="font-size:12px;color:var(--fg-muted);margin-left:4px">7 yil tajriba</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===========================
+     NEWS
+=========================== -->
+<section id="news">
+  <div class="glow-blob" style="right:-200px;bottom:0;width:600px;height:400px;background:rgba(91,127,245,0.08);"></div>
+  <div class="container">
+    <div class="text-center mb-5 reveal">
+      <p class="section-label">So'ngi Xabarlar</p>
+      <h2 class="section-title">Yangiliklar va Tadbirlar</h2>
+      <p class="section-desc">Maktab hayotidagi eng muhim voqealar va yangiliklar bilan doimo xabardor bo'ling.</p>
+    </div>
+    <div class="row g-4">
+
+      <div class="col-md-6 reveal" style="transition-delay:.05s">
+        <div class="news-card">
+          <div class="news-card-body">
+            <div class="d-flex align-items-center gap-3 mb-4">
+              <span class="news-badge" style="color:#fbbf24;border-color:rgba(251,191,36,0.3);background:rgba(251,191,36,0.08)">
+                <i class="bi bi-tag-fill"></i> Olimpiada
+              </span>
+              <span style="font-size:12px;color:var(--fg-muted);margin-left:auto"><i class="bi bi-calendar3"></i> 15 May 2025</span>
+            </div>
+            <h4 style="font-size:18px;margin-bottom:12px;line-height:1.4">O'quvchilarimiz Respublika Matematika Olimpiadasida 1-o'rinni egalladilar</h4>
+            <p style="font-size:14px;color:var(--fg-muted);line-height:1.7;margin-bottom:20px">Smart Maktabi o'quvchilari bu yil ham an'anaviy Respublika matematika olimpiadasida ajoyib natijalar ko'rsatdilar.</p>
+            <div style="color:var(--primary);font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px">Batafsil <i class="bi bi-arrow-right"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 reveal" style="transition-delay:.1s">
+        <div class="news-card">
+          <div class="news-card-body">
+            <div class="d-flex align-items-center gap-3 mb-4">
+              <span class="news-badge" style="color:#60a5fa;border-color:rgba(96,165,250,0.3);background:rgba(96,165,250,0.08)">
+                <i class="bi bi-tag-fill"></i> Ta'lim
+              </span>
+              <span style="font-size:12px;color:var(--fg-muted);margin-left:auto"><i class="bi bi-calendar3"></i> 3 Iyun 2025</span>
+            </div>
+            <h4 style="font-size:18px;margin-bottom:12px;line-height:1.4">Yangi STEM laboratoriyamiz rasman ochildi</h4>
+            <p style="font-size:14px;color:var(--fg-muted);line-height:1.7;margin-bottom:20px">Maktabimizda zamonaviy jihozlar bilan to'ldirilgan yangi STEM laboratoriyasi ishga tushirildi.</p>
+            <div style="color:var(--primary);font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px">Batafsil <i class="bi bi-arrow-right"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 reveal" style="transition-delay:.15s">
+        <div class="news-card">
+          <div class="news-card-body">
+            <div class="d-flex align-items-center gap-3 mb-4">
+              <span class="news-badge" style="color:#4ade80;border-color:rgba(74,222,128,0.3);background:rgba(74,222,128,0.08)">
+                <i class="bi bi-tag-fill"></i> Sport
+              </span>
+              <span style="font-size:12px;color:var(--fg-muted);margin-left:auto"><i class="bi bi-calendar3"></i> 28 Aprel 2025</span>
+            </div>
+            <h4 style="font-size:18px;margin-bottom:12px;line-height:1.4">Futbol jamoamiz mintaqaviy chempionatda g'olib bo'ldi</h4>
+            <p style="font-size:14px;color:var(--fg-muted);line-height:1.7;margin-bottom:20px">Smart Maktabi futbol jamoasi mintaqaviy chempionatda barcha o'yinlarini g'alaba bilan yakunladi.</p>
+            <div style="color:var(--primary);font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px">Batafsil <i class="bi bi-arrow-right"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 reveal" style="transition-delay:.2s">
+        <div class="news-card">
+          <div class="news-card-body">
+            <div class="d-flex align-items-center gap-3 mb-4">
+              <span class="news-badge" style="color:#c084fc;border-color:rgba(192,132,252,0.3);background:rgba(192,132,252,0.08)">
+                <i class="bi bi-tag-fill"></i> Tadbir
+              </span>
+              <span style="font-size:12px;color:var(--fg-muted);margin-left:auto"><i class="bi bi-calendar3"></i> 10 Aprel 2025</span>
+            </div>
+            <h4 style="font-size:18px;margin-bottom:12px;line-height:1.4">Yillik Bahor Festivali muvaffaqiyatli o'tdi</h4>
+            <p style="font-size:14px;color:var(--fg-muted);line-height:1.7;margin-bottom:20px">An'anaviy Bahor Festivalimizda o'quvchilar, o'qituvchilar va ota-onalar birgalikda ajoyib dam oldi.</p>
+            <div style="color:var(--primary);font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px">Batafsil <i class="bi bi-arrow-right"></i></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===========================
+     ACHIEVEMENTS
+=========================== -->
+<section id="achievements" style="background:rgba(255,255,255,0.01)">
+  <div class="glow-blob" style="top:50%;left:50%;transform:translate(-50%,-50%);width:800px;height:800px;background:rgba(245,181,35,0.04);"></div>
+  <div class="container">
+    <div class="text-center mb-5 reveal">
+      <p class="section-label">Faxrimiz</p>
+      <h2 class="section-title">Bizning Yutuqlarimiz</h2>
+      <p class="section-desc">Har yil maktabimiz yangi cho'qqilarni zabt etadi — raqamlar buni isbotlaydi.</p>
+    </div>
+    <div class="row g-4">
+
+      <div class="col-md-6 col-lg-4 reveal" style="transition-delay:.05s">
+        <div class="achievement-card" style="background:rgba(251,191,36,0.06);border-color:rgba(251,191,36,0.2)">
+          <div class="achievement-icon" style="color:#fbbf24;background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.25)"><i class="bi bi-trophy-fill"></i></div>
+          <div class="achievement-number" style="color:#fbbf24">47<span style="font-size:2rem">+</span></div>
+          <h5 style="font-size:16px;margin-bottom:8px">Olimpiada Sovrindorlari</h5>
+          <p style="font-size:13px;color:var(--fg-muted);margin:0;line-height:1.6">Respublika va xalqaro olimpiadalarda sovrin olgan o'quvchilar soni</p>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-4 reveal" style="transition-delay:.1s">
+        <div class="achievement-card" style="background:rgba(96,165,250,0.06);border-color:rgba(96,165,250,0.2)">
+          <div class="achievement-icon" style="color:#60a5fa;background:rgba(96,165,250,0.1);border-color:rgba(96,165,250,0.25)"><i class="bi bi-award-fill"></i></div>
+          <div class="achievement-number" style="color:#60a5fa">12</div>
+          <h5 style="font-size:16px;margin-bottom:8px">Xalqaro Sertifikat</h5>
+          <p style="font-size:13px;color:var(--fg-muted);margin:0;line-height:1.6">Cambridge, IELTS va xalqaro dasturlar bo'yicha sertifikatlar</p>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-4 reveal" style="transition-delay:.15s">
+        <div class="achievement-card" style="background:rgba(74,222,128,0.06);border-color:rgba(74,222,128,0.2)">
+          <div class="achievement-icon" style="color:#4ade80;background:rgba(74,222,128,0.1);border-color:rgba(74,222,128,0.25)"><i class="bi bi-patch-check-fill"></i></div>
+          <div class="achievement-number" style="color:#4ade80">98<span style="font-size:2rem">%</span></div>
+          <h5 style="font-size:16px;margin-bottom:8px">Universitetga Qabul</h5>
+          <p style="font-size:13px;color:var(--fg-muted);margin:0;line-height:1.6">Bitiruvchilarimizning nufuzli universitetlarga qabul ko'rsatkichi</p>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-4 reveal" style="transition-delay:.2s">
+        <div class="achievement-card" style="background:rgba(192,132,252,0.06);border-color:rgba(192,132,252,0.2)">
+          <div class="achievement-icon" style="color:#c084fc;background:rgba(192,132,252,0.1);border-color:rgba(192,132,252,0.25)"><i class="bi bi-gem"></i></div>
+          <div class="achievement-number" style="color:#c084fc">5<span style="font-size:2rem">x</span></div>
+          <h5 style="font-size:16px;margin-bottom:8px">Yillik Eng Yaxshi Maktab</h5>
+          <p style="font-size:13px;color:var(--fg-muted);margin:0;line-height:1.6">Mintaqaviy ta'lim musobaqalarida g'olib bo'lgan yillar soni</p>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-4 reveal" style="transition-delay:.25s">
+        <div class="achievement-card" style="background:rgba(251,113,133,0.06);border-color:rgba(251,113,133,0.2)">
+          <div class="achievement-icon" style="color:#fb7185;background:rgba(251,113,133,0.1);border-color:rgba(251,113,133,0.25)"><i class="bi bi-star-fill"></i></div>
+          <div class="achievement-number" style="color:#fb7185">200<span style="font-size:2rem">+</span></div>
+          <h5 style="font-size:16px;margin-bottom:8px">Ijtimoiy Loyihalar</h5>
+          <p style="font-size:13px;color:var(--fg-muted);margin:0;line-height:1.6">O'quvchilar tomonidan amalga oshirilgan ijtimoiy va madaniy loyihalar</p>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-4 reveal" style="transition-delay:.3s">
+        <div class="achievement-card" style="background:rgba(34,211,238,0.06);border-color:rgba(34,211,238,0.2)">
+          <div class="achievement-icon" style="color:#22d3ee;background:rgba(34,211,238,0.1);border-color:rgba(34,211,238,0.25)"><i class="bi bi-lightning-charge-fill"></i></div>
+          <div class="achievement-number" style="color:#22d3ee">30<span style="font-size:2rem">+</span></div>
+          <h5 style="font-size:16px;margin-bottom:8px">Sheriklik Dasturlari</h5>
+          <p style="font-size:13px;color:var(--fg-muted);margin:0;line-height:1.6">Xorijiy maktablar va universitetlar bilan hamkorlik shartnomalar</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===========================
+     GALLERY
+=========================== -->
+<section id="gallery">
+  <div class="glow-blob" style="top:0;left:0;width:500px;height:500px;background:rgba(124,58,237,0.08);"></div>
+  <div class="container">
+    <div class="text-center mb-5 reveal">
+      <p class="section-label">Galereya</p>
+      <h2 class="section-title">Maktab Hayoti</h2>
+      <p class="section-desc">Zamonaviy infratuzilma, ijodiy muhit va faol o'quvchilar bilan to'liq hayot.</p>
+    </div>
+    <div class="gallery-grid reveal">
+      <div class="gallery-item" onclick="openLightbox(0)">
+        <div class="gallery-bg" style="background:linear-gradient(135deg,#1e3a5f,#1e40af,#312e81)"></div>
+        <div class="gallery-emoji">📚</div>
+        <div class="gallery-overlay">
+          <div class="gallery-info">
+            <div style="font-size:10px;font-weight:700;color:rgba(245,181,35,0.8);letter-spacing:2px;text-transform:uppercase">Ta'lim</div>
+            <div style="font-size:13px;font-weight:700;color:#fff">Zamonaviy Sinfxona</div>
+          </div>
+        </div>
+        <div class="gallery-zoom"><i class="bi bi-zoom-in"></i></div>
+      </div>
+
+      <div class="gallery-item row-2" onclick="openLightbox(1)">
+        <div class="gallery-bg" style="background:linear-gradient(135deg,#14532d,#065f46,#134e4a)"></div>
+        <div class="gallery-emoji">⚽</div>
+        <div class="gallery-overlay">
+          <div class="gallery-info">
+            <div style="font-size:10px;font-weight:700;color:rgba(245,181,35,0.8);letter-spacing:2px;text-transform:uppercase">Sport</div>
+            <div style="font-size:13px;font-weight:700;color:#fff">Sport Maydoni</div>
+          </div>
+        </div>
+        <div class="gallery-zoom"><i class="bi bi-zoom-in"></i></div>
+      </div>
+
+      <div class="gallery-item" onclick="openLightbox(2)">
+        <div class="gallery-bg" style="background:linear-gradient(135deg,#4a1d96,#6d28d9,#312e81)"></div>
+        <div class="gallery-emoji">🔬</div>
+        <div class="gallery-overlay">
+          <div class="gallery-info">
+            <div style="font-size:10px;font-weight:700;color:rgba(245,181,35,0.8);letter-spacing:2px;text-transform:uppercase">Fan</div>
+            <div style="font-size:13px;font-weight:700;color:#fff">Kimyo Laboratoriyasi</div>
+          </div>
+        </div>
+        <div class="gallery-zoom"><i class="bi bi-zoom-in"></i></div>
+      </div>
+
+      <div class="gallery-item span-2" onclick="openLightbox(3)">
+        <div class="gallery-bg" style="background:linear-gradient(135deg,#881337,#9d174d,#701a75)"></div>
+        <div class="gallery-emoji">🎨</div>
+        <div class="gallery-overlay">
+          <div class="gallery-info">
+            <div style="font-size:10px;font-weight:700;color:rgba(245,181,35,0.8);letter-spacing:2px;text-transform:uppercase">Ijod</div>
+            <div style="font-size:13px;font-weight:700;color:#fff">San'at Darsxonasi</div>
+          </div>
+        </div>
+        <div class="gallery-zoom"><i class="bi bi-zoom-in"></i></div>
+      </div>
+
+      <div class="gallery-item" onclick="openLightbox(4)">
+        <div class="gallery-bg" style="background:linear-gradient(135deg,#78350f,#92400e,#78350f)"></div>
+        <div class="gallery-emoji">📖</div>
+        <div class="gallery-overlay">
+          <div class="gallery-info">
+            <div style="font-size:10px;font-weight:700;color:rgba(245,181,35,0.8);letter-spacing:2px;text-transform:uppercase">Bilim</div>
+            <div style="font-size:13px;font-weight:700;color:#fff">Kutubxona</div>
+          </div>
+        </div>
+        <div class="gallery-zoom"><i class="bi bi-zoom-in"></i></div>
+      </div>
+
+      <div class="gallery-item" onclick="openLightbox(5)">
+        <div class="gallery-bg" style="background:linear-gradient(135deg,#0f172a,#1e3a5f,#1e1b4b)"></div>
+        <div class="gallery-emoji">🎓</div>
+        <div class="gallery-overlay">
+          <div class="gallery-info">
+            <div style="font-size:10px;font-weight:700;color:rgba(245,181,35,0.8);letter-spacing:2px;text-transform:uppercase">Tadbir</div>
+            <div style="font-size:13px;font-weight:700;color:#fff">Bitirish Marosimi</div>
+          </div>
+        </div>
+        <div class="gallery-zoom"><i class="bi bi-zoom-in"></i></div>
+      </div>
+
+      <div class="gallery-item" onclick="openLightbox(6)">
+        <div class="gallery-bg" style="background:linear-gradient(135deg,#0c4a6e,#0369a1,#1e3a5f)"></div>
+        <div class="gallery-emoji">💻</div>
+        <div class="gallery-overlay">
+          <div class="gallery-info">
+            <div style="font-size:10px;font-weight:700;color:rgba(245,181,35,0.8);letter-spacing:2px;text-transform:uppercase">Texnologiya</div>
+            <div style="font-size:13px;font-weight:700;color:#fff">Kompyuter Xonasi</div>
+          </div>
+        </div>
+        <div class="gallery-zoom"><i class="bi bi-zoom-in"></i></div>
+      </div>
+
+      <div class="gallery-item" onclick="openLightbox(7)">
+        <div class="gallery-bg" style="background:linear-gradient(135deg,#14532d,#166534,#15803d)"></div>
+        <div class="gallery-emoji">🌿</div>
+        <div class="gallery-overlay">
+          <div class="gallery-info">
+            <div style="font-size:10px;font-weight:700;color:rgba(245,181,35,0.8);letter-spacing:2px;text-transform:uppercase">Kampus</div>
+            <div style="font-size:13px;font-weight:700;color:#fff">Ochiq Hovli</div>
+          </div>
+        </div>
+        <div class="gallery-zoom"><i class="bi bi-zoom-in"></i></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Gallery Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <div class="lightbox-inner" id="lightboxInner" onclick="event.stopPropagation()">
+    <button class="lightbox-close" onclick="closeLightbox()"><i class="bi bi-x"></i></button>
+    <div id="lightboxContent" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;"></div>
+  </div>
+</div>
+
+<!-- ===========================
+     REGISTRATION
+=========================== -->
+<section id="registration" style="background:rgba(255,255,255,0.01)">
+  <div class="glow-blob" style="top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:700px;background:rgba(91,127,245,0.08);"></div>
+  <div class="container">
+    <div class="text-center mb-5 reveal">
+      <p class="section-label">Qo'shiling</p>
+      <h2 class="section-title">Ro'yxatdan O'tish</h2>
+      <p class="section-desc">Farzandingizning kelajagiga birinchi qadamni qo'ying. Bugun ro'yxatdan o'ting!</p>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-lg-7 col-xl-6 reveal">
+
+        <!-- Operator Contact -->
+        <div class="operator-box">
+          <div class="operator-header">
+            <div class="operator-icon"><i class="bi bi-headset"></i></div>
+            <div>
+              <div style="font-size:16px;font-weight:700;color:var(--fg)">Operator bilan bog'lanish</div>
+              <div style="font-size:13px;color:var(--fg-muted)">Savollaringiz bo'lsa, biz bilan bog'laning</div>
+            </div>
+          </div>
+          <div class="d-flex gap-3 flex-wrap operator-contacts">
+            <a href="tel:+998901234567" class="contact-btn phone" style="color:var(--fg)">
+              <div class="contact-btn-icon" style="background:rgba(91,127,245,0.2);color:var(--primary)"><i class="bi bi-telephone-fill"></i></div>
+              <div>
+                <div style="font-size:11px;color:var(--fg-muted)">Telefon qiling</div>
+                <div style="font-size:14px;font-weight:700">+998 90 123 45 67</div>
+              </div>
+            </a>
+            <a href="https://t.me/smartmaktabi" target="_blank" class="contact-btn telegram" style="color:var(--fg)">
+              <div class="contact-btn-icon" style="background:rgba(14,150,212,0.2);color:#38bdf8"><i class="bi bi-telegram"></i></div>
+              <div>
+                <div style="font-size:11px;color:var(--fg-muted)">Telegram orqali</div>
+                <div style="font-size:14px;font-weight:700">@smartmaktabi</div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Form Card -->
+        <div class="form-card">
+          <div class="d-flex align-items-center gap-3 mb-4">
+            <div style="width:44px;height:44px;border-radius:12px;background:rgba(91,127,245,0.2);display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:20px;flex-shrink:0"><i class="bi bi-person-plus-fill"></i></div>
+            <div>
+              <div style="font-size:18px;font-weight:700;color:var(--fg)">Ariza Shakli</div>
+              <div style="font-size:13px;color:var(--fg-muted)">Barcha maydonlarni to'ldiring</div>
+            </div>
+          </div>
+
+          <!-- Success state -->
+          <div class="success-box" id="successBox">
+            <div class="success-icon-wrap"><i class="bi bi-check-circle-fill"></i></div>
+            <h5 style="font-size:20px;margin-bottom:8px">Ariza qabul qilindi!</h5>
+            <p style="color:var(--fg-muted);margin:0">Tez orada operatorimiz siz bilan bog'lanadi.</p>
+          </div>
+
+          <!-- Form -->
+          <form id="regForm" novalidate>
+            <div class="row g-3 mb-3">
+              <div class="col-sm-6">
+                <label class="form-label-custom">Ism</label>
+                <input type="text" id="ism" class="form-control-custom" placeholder="Masalan: Asilbek" />
+                <div class="field-error" id="err-ism">Ism kamida 2 ta harfdan iborat bo'lishi kerak</div>
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label-custom">Familya</label>
+                <input type="text" id="familya" class="form-control-custom" placeholder="Masalan: Karimov" />
+                <div class="field-error" id="err-familya">Familya kamida 2 ta harfdan iborat bo'lishi kerak</div>
+              </div>
+            </div>
+            <div class="row g-3 mb-4">
+              <div class="col-sm-6">
+                <label class="form-label-custom">Yosh</label>
+                <input type="number" id="yosh" class="form-control-custom" placeholder="Masalan: 12" min="5" max="18" />
+                <div class="field-error" id="err-yosh">Yosh 5 dan 18 gacha bo'lishi kerak</div>
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label-custom">Telefon Raqam</label>
+                <input type="tel" id="telefon" class="form-control-custom" placeholder="+998 90 000 00 00" />
+                <div class="field-error" id="err-telefon">To'g'ri telefon raqam kiriting</div>
+              </div>
+            </div>
+            <button type="submit" class="btn-submit">Ro'yxatdan O'tish</button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===========================
+     CONTACT
+=========================== -->
+<section id="contact">
+  <div class="glow-blob" style="bottom:0;left:0;width:600px;height:400px;background:rgba(91,127,245,0.07);"></div>
+  <div class="container">
+    <div class="text-center mb-5 reveal">
+      <p class="section-label">Bog'laning</p>
+      <h2 class="section-title">Biz Bilan Aloqa</h2>
+      <p class="section-desc">Har qanday savol yoki ma'lumot uchun quyidagi kanallar orqali murojaat qiling.</p>
+    </div>
+    <div class="row g-5 align-items-start">
+      <div class="col-lg-6">
+        <div class="row g-3">
+          <div class="col-sm-6 reveal" style="transition-delay:.05s">
+            <div class="contact-info-card" style="background:rgba(251,113,133,0.06);border-color:rgba(251,113,133,0.2)">
+              <div class="contact-info-icon" style="color:#fb7185;background:rgba(251,113,133,0.1);border-color:rgba(251,113,133,0.2)"><i class="bi bi-geo-alt-fill"></i></div>
+              <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--fg-muted);margin-bottom:6px">Manzil</div>
+              <div style="font-size:14px;font-weight:600;color:var(--fg);line-height:1.5">Toshkent sh., Chilonzor tumani, Bunyodkor ko'chasi 42</div>
+            </div>
+          </div>
+          <div class="col-sm-6 reveal" style="transition-delay:.1s">
+            <div class="contact-info-card" style="background:rgba(74,222,128,0.06);border-color:rgba(74,222,128,0.2)">
+              <div class="contact-info-icon" style="color:#4ade80;background:rgba(74,222,128,0.1);border-color:rgba(74,222,128,0.2)"><i class="bi bi-telephone-fill"></i></div>
+              <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--fg-muted);margin-bottom:6px">Telefon</div>
+              <a href="tel:+998901234567" style="font-size:14px;font-weight:600;color:var(--fg)">+998 90 123 45 67</a>
+            </div>
+          </div>
+          <div class="col-sm-6 reveal" style="transition-delay:.15s">
+            <div class="contact-info-card" style="background:rgba(96,165,250,0.06);border-color:rgba(96,165,250,0.2)">
+              <div class="contact-info-icon" style="color:#60a5fa;background:rgba(96,165,250,0.1);border-color:rgba(96,165,250,0.2)"><i class="bi bi-envelope-fill"></i></div>
+              <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--fg-muted);margin-bottom:6px">Email</div>
+              <a href="mailto:info@smartmaktabi.uz" style="font-size:14px;font-weight:600;color:var(--fg)">info@smartmaktabi.uz</a>
+            </div>
+          </div>
+          <div class="col-sm-6 reveal" style="transition-delay:.2s">
+            <div class="contact-info-card" style="background:rgba(251,191,36,0.06);border-color:rgba(251,191,36,0.2)">
+              <div class="contact-info-icon" style="color:#fbbf24;background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.2)"><i class="bi bi-clock-fill"></i></div>
+              <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--fg-muted);margin-bottom:6px">Ish Vaqti</div>
+              <div style="font-size:14px;font-weight:600;color:var(--fg)">Du–Sha: 08:00–18:00</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6 reveal" style="transition-delay:.1s">
+        <div class="map-placeholder">
+          <div class="map-grid"></div>
+          <div style="text-align:center;position:relative;z-index:2">
+            <div style="width:64px;height:64px;border-radius:50%;background:rgba(91,127,245,0.2);border:1px solid rgba(91,127,245,0.3);display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--primary);margin:0 auto 16px">
+              <i class="bi bi-geo-alt-fill"></i>
+            </div>
+            <p style="font-weight:700;font-size:18px;margin-bottom:6px">Smart Maktabi</p>
+            <p style="color:var(--fg-muted);font-size:14px;margin-bottom:20px">Toshkent, Chilonzor tumani</p>
+            <a href="https://maps.google.com" target="_blank" style="display:inline-block;padding:10px 24px;border-radius:10px;background:rgba(91,127,245,0.15);border:1px solid rgba(91,127,245,0.3);color:var(--primary);font-size:14px;font-weight:600">Xaritada Ko'rish</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===========================
+     FOOTER
+=========================== -->
+<footer>
+  <div class="glow-blob" style="top:0;left:50%;transform:translateX(-50%);width:700px;height:200px;background:rgba(91,127,245,0.05);"></div>
+  <div class="container" style="position:relative;z-index:2">
+    <div class="row g-5 mb-5">
+      <div class="col-lg-5 reveal">
+        <div class="d-flex align-items-center gap-3 mb-3" style="cursor:pointer" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+          <div class="nav-logo-icon"><i class="bi bi-book-half"></i></div>
+          <span class="footer-logo">Smart Maktabi</span>
+        </div>
+        <p class="footer-desc">Zamonaviy ta'lim, xalqaro standartlar va milliy qadriyatlar uyg'unlashgan O'zbekistonning yetakchi xususiy maktabi.</p>
+        <div class="d-flex gap-2 mt-4">
+          <a href="https://t.me/smartmaktabi"           target="_blank" class="social-btn tg"><i class="bi bi-telegram"></i></a>
+          <a href="https://instagram.com/smartmaktabi"  target="_blank" class="social-btn ig"><i class="bi bi-instagram"></i></a>
+          <a href="https://youtube.com/@smartmaktabi"   target="_blank" class="social-btn yt"><i class="bi bi-youtube"></i></a>
+          <a href="https://facebook.com/smartmaktabi"   target="_blank" class="social-btn fb"><i class="bi bi-facebook"></i></a>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-lg-3 reveal" style="transition-delay:.1s">
+        <h6 class="footer-heading">Tezkor Navigatsiya</h6>
+        <a class="footer-link" href="#about"        onclick="navScrollTo(event,'about')">Biz Haqimizda</a>
+        <a class="footer-link" href="#teachers"     onclick="navScrollTo(event,'teachers')">O'qituvchilar</a>
+        <a class="footer-link" href="#news"         onclick="navScrollTo(event,'news')">Yangiliklar</a>
+        <a class="footer-link" href="#achievements" onclick="navScrollTo(event,'achievements')">Yutuqlar</a>
+        <a class="footer-link" href="#gallery"      onclick="navScrollTo(event,'gallery')">Galereya</a>
+        <a class="footer-link" href="#registration" onclick="navScrollTo(event,'registration')">Ro'yxatdan O'tish</a>
+      </div>
+
+      <div class="col-sm-6 col-lg-4 reveal" style="transition-delay:.2s">
+        <h6 class="footer-heading">Aloqa Ma'lumotlari</h6>
+        <p style="font-size:14px;color:var(--fg-muted);margin-bottom:10px;line-height:1.6">Toshkent sh., Chilonzor tumani,<br>Bunyodkor ko'chasi 42</p>
+        <a href="tel:+998901234567"        class="d-block mb-2" style="font-size:14px;color:var(--fg-muted)">+998 90 123 45 67</a>
+        <a href="mailto:info@smartmaktabi.uz" class="d-block mb-2" style="font-size:14px;color:var(--fg-muted)">info@smartmaktabi.uz</a>
+        <p style="font-size:14px;color:var(--fg-muted)">Dushanba–Shanba: 08:00–18:00</p>
+      </div>
+    </div>
+
+    <div class="d-flex flex-column flex-sm-row align-items-center justify-content-between pt-4" style="border-top:1px solid var(--border)">
+      <p class="copyright mb-2 mb-sm-0">© 2025 Smart Maktabi. Barcha huquqlar himoyalangan.</p>
+      <p style="font-size:12px;color:rgba(122,134,158,0.4);margin:0">Toshkent, O'zbekiston</p>
+    </div>
+  </div>
+</footer>
+
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  /* ===========================
+     LOADING SCREEN
+  =========================== */
+  window.addEventListener('load', function () {
+    setTimeout(function () {
+      document.getElementById('loading-screen').classList.add('hide');
+    }, 2700);
+  });
+
+  /* ===========================
+     NAVBAR SCROLL EFFECT
+  =========================== */
+  window.addEventListener('scroll', function () {
+    var nav = document.getElementById('navbar');
+    if (window.scrollY > 50) {
+      nav.classList.add('scrolled');
+    } else {
+      nav.classList.remove('scrolled');
+    }
+  });
+
+  /* ===========================
+     SMOOTH SCROLL HELPERS
+  =========================== */
+  function navScrollTo(e, id) {
+    e.preventDefault();
+    var el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function toggleMobileNav() {
+    var nav = document.getElementById('mobileNav');
+    nav.classList.toggle('open');
+  }
+
+  function mobileNavGo(id) {
+    document.getElementById('mobileNav').classList.remove('open');
+    setTimeout(function () {
+      var el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }, 200);
+  }
+
+  /* ===========================
+     SCROLL REVEAL
+  =========================== */
+  var revealObserver = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(function (el) {
+    revealObserver.observe(el);
+  });
+
+  /* ===========================
+     ANIMATED COUNTERS
+  =========================== */
+  var counted = false;
+
+  function runCounters() {
+    if (counted) return;
+    var statEls = document.querySelectorAll('.stat-number[data-target]');
+    if (!statEls.length) return;
+
+    var first = statEls[0].getBoundingClientRect();
+    if (first.top > window.innerHeight) return;
+
+    counted = true;
+    statEls.forEach(function (el) {
+      var target   = parseInt(el.getAttribute('data-target'), 10);
+      var suffix   = el.getAttribute('data-suffix') || '';
+      var duration = 2000;
+      var start    = null;
+
+      function step(ts) {
+        if (!start) start = ts;
+        var progress = Math.min((ts - start) / duration, 1);
+        // easeOutQuart
+        var ease = 1 - Math.pow(1 - progress, 4);
+        el.textContent = Math.floor(ease * target) + suffix;
+        if (progress < 1) requestAnimationFrame(step);
+      }
+
+      requestAnimationFrame(step);
+    });
+  }
+
+  window.addEventListener('scroll', runCounters);
+  runCounters();
+
+  /* ===========================
+     GALLERY LIGHTBOX
+  =========================== */
+  var galleryData = [
+    { emoji: '📚', category: 'TA\'LIM',      title: 'Zamonaviy Sinfxona',     bg: 'linear-gradient(135deg,#1e3a5f,#1e40af,#312e81)' },
+    { emoji: '⚽', category: 'SPORT',        title: 'Sport Maydoni',           bg: 'linear-gradient(135deg,#14532d,#065f46,#134e4a)' },
+    { emoji: '🔬', category: 'FAN',          title: 'Kimyo Laboratoriyasi',    bg: 'linear-gradient(135deg,#4a1d96,#6d28d9,#312e81)' },
+    { emoji: '🎨', category: 'IJOD',         title: 'San\'at Darsxonasi',      bg: 'linear-gradient(135deg,#881337,#9d174d,#701a75)' },
+    { emoji: '📖', category: 'BILIM',        title: 'Kutubxona',               bg: 'linear-gradient(135deg,#78350f,#92400e,#78350f)' },
+    { emoji: '🎓', category: 'TADBIR',       title: 'Bitirish Marosimi',       bg: 'linear-gradient(135deg,#0f172a,#1e3a5f,#1e1b4b)' },
+    { emoji: '💻', category: 'TEXNOLOGIYA',  title: 'Kompyuter Xonasi',        bg: 'linear-gradient(135deg,#0c4a6e,#0369a1,#1e3a5f)' },
+    { emoji: '🌿', category: 'KAMPUS',       title: 'Ochiq Hovli',             bg: 'linear-gradient(135deg,#14532d,#166534,#15803d)' },
+  ];
+
+  function openLightbox(idx) {
+    var d = galleryData[idx];
+    var content = document.getElementById('lightboxContent');
+    var inner   = document.getElementById('lightboxInner');
+    inner.style.background = d.bg;
+    content.innerHTML =
+      '<div style="font-size:100px;margin-bottom:16px">' + d.emoji + '</div>' +
+      '<p style="font-size:12px;font-weight:700;letter-spacing:3px;color:#f5b523;text-transform:uppercase;margin-bottom:8px">' + d.category + '</p>' +
+      '<h3 style="font-size:24px;font-family:\'Playfair Display\',Georgia,serif;color:#fff;margin:0">' + d.title + '</h3>';
+    document.getElementById('lightbox').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeLightbox();
+  });
+
+  /* ===========================
+     REGISTRATION FORM
+  =========================== */
+  document.getElementById('regForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    var ism     = document.getElementById('ism').value.trim();
+    var familya = document.getElementById('familya').value.trim();
+    var yosh    = parseInt(document.getElementById('yosh').value, 10);
+    var telefon = document.getElementById('telefon').value.trim();
+
+    var valid = true;
+
+    function showErr(id, show) {
+      var el = document.getElementById(id);
+      if (show) { el.classList.add('show');    valid = false; }
+      else       { el.classList.remove('show'); }
+    }
+
+    showErr('err-ism',     ism.length < 2);
+    showErr('err-familya', familya.length < 2);
+    showErr('err-yosh',    isNaN(yosh) || yosh < 5 || yosh > 18);
+    showErr('err-telefon', telefon.length < 9);
+
+    if (!valid) return;
+
+    // Hide form, show success
+    document.getElementById('regForm').style.display = 'none';
+    var sb = document.getElementById('successBox');
+    sb.style.display = 'flex';
+
+    // Reset after 5s
+    setTimeout(function () {
+      sb.style.display = 'none';
+      document.getElementById('regForm').style.display = 'block';
+      document.getElementById('regForm').reset();
+    }, 5000);
+  });
+
+  // Clear errors on input
+  ['ism','familya','yosh','telefon'].forEach(function (id) {
+    document.getElementById(id).addEventListener('input', function () {
+      document.getElementById('err-' + id).classList.remove('show');
+    });
+  });
+</script>
+
+</body>
+</html>
